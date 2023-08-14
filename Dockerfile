@@ -1,4 +1,4 @@
-FROM python:3.9.6-alpine
+FROM python:3.9.6-slim
 WORKDIR /app/
 COPY ./fastapi_app.py /app/
 COPY ./predictor.py /app/
