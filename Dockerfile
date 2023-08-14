@@ -1,5 +1,5 @@
 FROM python:3.9.6-slim
-COPY ./flask_app.py /deploy/
+COPY ./fastapi_app.py /deploy/
 COPY ./predictor.py /deploy/
 COPY ./trained-model.joblib /deploy/
 COPY ./requirements.txt /tmp/
