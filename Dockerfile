@@ -1,4 +1,3 @@
-Dockerfile
 FROM python:3.9.6-slim
 COPY ./flask_app.py /deploy/
 COPY ./predictor.py /deploy/
