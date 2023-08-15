@@ -23,4 +23,4 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 EXPOSE 8080
 
 # Set the command for running the FastAPI app
-CMD ["uvicorn", "fastapi_app:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "--port 8080", "fastapi_app:app"]
