@@ -259,6 +259,6 @@ print('Public URL:', ngrok_tunnel.public_url)
 
 nest_asyncio.apply()
 
-#Commnt out when not in colab
-# Don't run programatically when deploy to server, use command line instead
-uvicorn.run(app, host="0.0.0.0", port=PORT, log_level="info")
+# #Commnt out when not in colab
+# # Don't run programatically when deploy to server, use command line instead
+# uvicorn.run(app, host="0.0.0.0", port=PORT, log_level="info")
