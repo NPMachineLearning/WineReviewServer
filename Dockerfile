@@ -17,7 +17,7 @@ RUN pip install nltk && \
     python -m nltk.downloader -d $NLTK_DATA stopwords punkt
 
 # Install the required packages from requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Expose port 8080
 EXPOSE 8080
