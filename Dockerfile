@@ -20,7 +20,7 @@ RUN pip install nltk && \
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Expose port 8080
-EXPOSE 80
+EXPOSE 8080
 
 # Set the command for running the FastAPI app
-CMD ["uvicorn", "--host 0.0.0.0", "--port 80", "fastapi_app:app"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8080", "fastapi_app:app"]

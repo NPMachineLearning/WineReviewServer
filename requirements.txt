@@ -8,3 +8,4 @@ pydantic
 pyngrok
 rake_nltk
 uvicorn
+scikit-learn
