@@ -250,15 +250,15 @@ def custom_openapi():
 app.openapi = custom_openapi
 
 if __name__ == "__main__":
-  # #Commnt out when not in colab
-  # PORT=80
-  # #Commnt out when not in colab
-  # ngrok_tunnel = ngrok.connect(PORT)
-  # #Commnt out when not in colab
-  # print('Public URL:', ngrok_tunnel.public_url)
+  #Commnt out when not in colab
+  PORT=8080
+  #Commnt out when not in colab
+  ngrok_tunnel = ngrok.connect(PORT)
+  #Commnt out when not in colab
+  print('Public URL:', ngrok_tunnel.public_url)
 
   nest_asyncio.apply()
 
-  # #Commnt out when not in colab
-  # # Don't run programatically when deploy to server, use command line instead
-  # uvicorn.run(app, host="0.0.0.0", port=PORT, log_level="info")
+  #Commnt out when not in colab
+  # Don't run programatically when deploy to server, use command line instead
+  uvicorn.run(app, host="0.0.0.0", port=PORT, log_level="info")
