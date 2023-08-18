@@ -16,7 +16,8 @@ server as container locally
 
 # API document
 
-1. run `docker compose up` and wait for server boot up
+1. run `docker compose up` and wait for server to boot up
 2. visit [http://localhost:8080/redoc](http://localhost:8080/redoc)
-   if port is changed compose and docker file then port number must be
+
+   if port is changed in compose and docker file then address port number must be
    changed accordingly
