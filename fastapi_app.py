@@ -90,9 +90,7 @@ app = FastAPI()
 
 # List of CORS
 origins = [
-    "*",
-    "https?://.*", # https://github.com/tiangolo/fastapi/issues/133
-    "http://localhost:3000"
+    "*"
 ]
 
 # Add CORS middleware
