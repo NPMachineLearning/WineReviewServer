@@ -39,9 +39,14 @@ import numpy as np
 import math
 import predictor
 
+# Default page and size
+PAGE, SIZE = 1, 10
+
 # WineQuery model
 class WineQuery(BaseModel):
   description: str
+  page: Optional[int] = PAGE
+  size: Optional[int] = SIZE
 
 # AppState response model
 class AppStateResponse(BaseModel):
@@ -54,9 +59,7 @@ class Response(BaseModel):
   page: int
   size: int
   result: list
-
-# Pre-set page and size
-PAGE, SIZE = 1, 10
+  server_message: str
 
 # Instantiate predictor
 predictor = predictor.WineRecommendor()
@@ -75,7 +78,8 @@ def reponse_handler(total_pages=0,
                     total_results=0,
                     page=PAGE,
                     size=SIZE,
-                    result=[]):
+                    result=[],
+                    server_message=""):
   '''
   Handle respond object
   '''
@@ -83,7 +87,8 @@ def reponse_handler(total_pages=0,
                   total_results=total_results,
                   page=page,
                   size=size,
-                  result=result)
+                  result=result,
+                  server_message=server_message)
 
 # Create APP
 app = FastAPI()
@@ -103,16 +108,15 @@ app.add_middleware(
 )
 
 @app.get('/', response_model=AppStateResponse)
-async def default():
+async def default() -> AppStateResponse:
   '''
   App is up and runing if successful response
   '''
   return AppStateResponse()
 
-# Return all tags that can be query
-@app.get('/all-tags', response_model=Response)
-async def tag_list(page: Optional[int] = PAGE,
-                    size: Optional[int] = SIZE):
+# Return all column names that can be query
+@app.get('/all-column-names', response_model=Response)
+async def column_list() -> Response:
   '''
   Return a list of column names in data table
   '''
@@ -120,21 +124,21 @@ async def tag_list(page: Optional[int] = PAGE,
   return reponse_handler(result=list(tags))
 
 
-# Return all unique values under specific column in data table
-@app.get('/list-of/{col_tag}', response_model=Response)
-async def list_of(col_tag: str,
+# Return all unique values under specific column name in data table
+@app.get('/list-of/', response_model=Response)
+async def list_of(column_name: str,
                   page: Optional[int] = PAGE,
-                  size: Optional[int] = SIZE):
+                  size: Optional[int] = SIZE) -> Response:
   '''
   Return a list of unique values under a column name
   '''
   column_tags = predictor.get_data_table_col_names()
-  if col_tag not in column_tags:
-    return reponse_handler()
+  if column_name not in column_tags:
+    return reponse_handler(server_message=f"column name \"{column_name}\" doesn't exist")
 
   page, size = page_size_handler(page, size)
 
-  result_series = predictor.get_data_from_table_by(col_tag)
+  result_series = predictor.get_data_from_table_by(column_name)
   values = result_series.value_counts().index
 
   total_results = len(values)
@@ -143,33 +147,23 @@ async def list_of(col_tag: str,
 
   result_records = list(values[start_index:start_index+size])
 
-  return {
-      'total_pages': total_pages,
-      'total_results': total_results,
-      'page': page,
-      'size': size,
-      'result': result_records
-  }
-
   return reponse_handler(total_pages,
                          total_results,
                          page, size,
                          result_records)
 
 # Recommend wine
-@app.post('/find-wine', response_model=Response)
-async def find_wine(wine_query: WineQuery,
-                    page: Optional[int] = PAGE,
-                    size: Optional[int] = SIZE):
+@app.post('/find-wine/', response_model=Response)
+async def find_wine(query:WineQuery) -> Response:
   '''
   Predict wine that is similar to description
   '''
-  page, size = page_size_handler(page, size)
+  page, size = page_size_handler(query.page, query.size)
 
-  if not wine_query.description:
-    return reponse_handler(0, 0, page, size, [])
+  if not query.description or query.description == "" or query.description.isspace():
+    return reponse_handler(0, 0, page, size, [], f"description can't be empty")
 
-  result_df = predictor.find_wine_by_desc(wine_query.description)
+  result_df = predictor.find_wine_by_desc(query.description)
 
   total_results = len(result_df)
   total_pages = math.ceil(total_results / size)
@@ -186,7 +180,6 @@ async def find_wine(wine_query: WineQuery,
                          'winery',
                          'points',
                          'price']]
-
 
   result_records = result_df.to_dict('records')
 
